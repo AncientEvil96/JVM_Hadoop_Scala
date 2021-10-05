@@ -8,9 +8,6 @@ import org.apache.hadoop.fs.{FileSystem, Path};
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
-import java.io.IOException
-
-
 object ScalaMapReduce extends Configured with Tool {
 
   val IN_PATH_PARAM = "swap.input"
@@ -34,15 +31,14 @@ object ScalaMapReduce extends Configured with Tool {
     }
   }
 
-  class SwapReducer extends Reducer[LongWritable, Text, IntWritable, Text] {
-    val word = new IntWritable()
+  class SwapReducer extends Reducer[IntWritable, Text, IntWritable, Text] {
+    val result = new IntWritable()
 
-    @throws[IOException]
-    @throws[InterruptedException]
-    def reduce(key: Nothing, values: Iterable[IntWritable], context: Nothing): Unit = {
+    override def reduce(key: Text, values: Iterable[IntWritable], context: Context): Unit = {
       var sum = 0
-      for (`val` <- values) {
-        sum += `val`.get
+      var res = new IntWritable()
+      for (res <- values) {
+        sum += res.get()
       }
       result.set(sum)
       context.write(key, result)
