@@ -31,16 +31,17 @@ object ScalaMapReduce extends Configured with Tool {
     }
   }
 
-  class SwapReducer extends Reducer[IntWritable, Text, IntWritable, Text] {
+  class SwapReducer extends Reducer[LongWritable, Text, IntWritable, Text] {
     val result = new IntWritable()
 
-    override def reduce(key: Text, values: Iterable[IntWritable], context: Context): Unit = {
+    override def reduce(key: IntWritable, values: Iterable[Text],
+                        context: Reducer[IntWritable, Text, IntWritable, Text]#Context): Unit = {
       var sum = 0
       for (res <- values) {
         sum += res.get()
       }
       result.set(sum)
-      //context.write(key, result)
+      context.write(key, result)
     }
   }
 
