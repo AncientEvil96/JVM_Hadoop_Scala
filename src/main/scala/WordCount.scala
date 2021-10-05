@@ -36,12 +36,11 @@ object ScalaMapReduce extends Configured with Tool {
 
     override def reduce(key: Text, values: Iterable[IntWritable], context: Context): Unit = {
       var sum = 0
-      var res = new IntWritable()
       for (res <- values) {
         sum += res.get()
       }
       result.set(sum)
-      context.write(key, result)
+      //context.write(key, result)
     }
   }
 
