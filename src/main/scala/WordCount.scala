@@ -1,11 +1,9 @@
 import org.apache.hadoop.conf.{Configuration, Configured}
 import org.apache.hadoop.util.{Tool, ToolRunner}
-
-import org.apache.hadoop.io.{IntWritable, LongWritable, Text};
-import org.apache.hadoop.mapreduce.{Job, Mapper, Reducer};
-
-import org.apache.hadoop.fs.{FileSystem, Path};
-import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.io.{IntWritable, LongWritable, Text, Writable}
+import org.apache.hadoop.mapreduce.{Job, Mapper, Reducer}
+import org.apache.hadoop.fs.{FileSystem, Path}
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 object ScalaMapReduce extends Configured with Tool {
@@ -31,19 +29,19 @@ object ScalaMapReduce extends Configured with Tool {
     }
   }
 
-  class SwapReducer extends Reducer[LongWritable, Text, IntWritable, Text] {
-    val result = new IntWritable()
-
-    override def reduce(values: Iterable[IntWritable], key: Text,
-                        context: Reducer[LongWritable, Text, IntWritable, Text]#Context): Unit = {
-      var sum = 0
-      for (res <- values) {
-        sum += res.get()
-      }
-      result.set(sum)
-      context.write(result, key)
-    }
-  }
+//  class SwapReducer extends Reducer[LongWritable, Text, IntWritable, Text] {
+//    val result = new IntWritable()
+//
+//    override def reduce(key: Text, values: Iterable[IntWritable],
+//                        context: Reducer[Text,IntWritable,ImmutableBytesWritable,Writable]#Context): Unit = {
+//      var sum = 0
+//      for (res <- values) {
+//        sum += res.get()
+//      }
+//      result.set(sum)
+//      context.write(key, result)
+//    }
+//  }
 
   override def run(args: Array[String]): Int = {
     val job = Job.getInstance(getConf, "Word Count")
@@ -51,8 +49,8 @@ object ScalaMapReduce extends Configured with Tool {
     job.setOutputKeyClass(classOf[IntWritable])
     job.setOutputValueClass(classOf[Text])
     job.setMapperClass(classOf[SwapMapper])
-    job.setReducerClass(classOf[Reducer[IntWritable, Text, IntWritable, Text]])
-    job.setNumReduceTasks(1)
+//    job.setReducerClass(classOf[Reducer[IntWritable, Text, IntWritable, Text]])
+//    job.setNumReduceTasks(1)
     val in = new Path(getConf.get(IN_PATH_PARAM))
     val out = new Path(getConf.get(OUT_PATH_PARAM))
     FileInputFormat.addInputPath(job, in)
