@@ -25,7 +25,6 @@ object ScalaMapReduce extends Configured with Tool {
       for (word <- line) {
         text.set(word)
         context.write(text, one)
-        println(text, one)
       }
     }
   }
@@ -41,7 +40,6 @@ object ScalaMapReduce extends Configured with Tool {
       }
       result.set(sum)
       context.write(key, result)
-//      println(key, result)
     }
   }
 
