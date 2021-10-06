@@ -34,19 +34,16 @@ object ScalaMapReduce extends Configured with Tool {
   class SwapReducer extends Reducer[LongWritable, Text, IntWritable, Text] {
     val result = new IntWritable()
 
-    override def reduce(key: IntWritable, values: Iterable[Text],
-                        context: Reducer[IntWritable, Text, IntWritable, Text]#Context): Unit = {
+    override def reduce(values: Iterable[IntWritable], key: Text,
+                        context: Reducer[LongWritable, Text, IntWritable, Text]#Context): Unit = {
       var sum = 0
       for (res <- values) {
         sum += res.get()
       }
       result.set(sum)
-      context.write(key, result)
+      context.write(result, key)
     }
   }
-
-
-
 
   override def run(args: Array[String]): Int = {
     val job = Job.getInstance(getConf, "Word Count")
