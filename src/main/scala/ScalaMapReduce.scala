@@ -66,7 +66,6 @@ object ScalaMapReduce extends Configured with Tool {
 
     if (job.waitForCompletion(true)) 0 else 1
   }
-
 }
 
 
